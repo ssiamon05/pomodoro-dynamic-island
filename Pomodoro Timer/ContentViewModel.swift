@@ -61,7 +61,8 @@ final class ContentViewModel: ObservableObject {
                 focusTime: focusTime,
                 focusMinutes: focusMinutes,
                 breakTime: breakTime,
-                breakMinutes: breakMinutes
+                breakMinutes: breakMinutes,
+                cyclesCount: cyclesCount
             ),
             staleDate: nil
         )
@@ -96,7 +97,8 @@ final class ContentViewModel: ObservableObject {
                 focusTime: focusTime,
                 focusMinutes: focusMinutes,
                 breakTime: breakTime,
-                breakMinutes: breakMinutes
+                breakMinutes: breakMinutes,
+                cyclesCount: cyclesCount
             ),
             staleDate: nil
         )
@@ -124,7 +126,8 @@ final class ContentViewModel: ObservableObject {
                         focusTime: focusTime,
                         focusMinutes: focusMinutes,
                         breakTime: breakTime,
-                        breakMinutes: breakMinutes
+                        breakMinutes: breakMinutes,
+                        cyclesCount: cyclesCount
                     ),
                     staleDate: nil
                 )

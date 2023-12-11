@@ -12,11 +12,12 @@ struct PomodoroAttributes: ActivityAttributes {
     typealias ContentState = PomodoroState
 
     struct PomodoroState: Codable, Hashable {
-        let focusIsActive: Bool
-        let breakIsActive: Bool
-        let focusTime: String
-        let focusMinutes: Float
-        let breakTime: String
-        let breakMinutes: Float
+        var focusIsActive: Bool
+        var breakIsActive: Bool
+        var focusTime: String
+        var focusMinutes: Float
+        var breakTime: String
+        var breakMinutes: Float
+        var cyclesCount: Int
     }
 }
