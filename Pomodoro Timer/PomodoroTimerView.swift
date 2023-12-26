@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  PomodoroTimerView.swift
 //  Pomodoro Timer
 //
 //  Created by Sam.Siamon on 12/5/23.
@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct ContentView: View {
-    @StateObject private var viewModel = ContentViewModel()
+struct PomodoroTimerView: View {
+    @StateObject private var viewModel = PomodoroTimerViewModel()
     private let timer = Timer.publish(every: 1, on: .current, in: .common).autoconnect()
 
     var body: some View {
@@ -87,5 +87,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    PomodoroTimerView()
 }

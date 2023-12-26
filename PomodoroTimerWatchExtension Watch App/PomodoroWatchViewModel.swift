@@ -1,14 +1,13 @@
 //
-//  ContentViewModel.swift
-//  Pomodoro Timer
+//  PomodoroWatchViewModel.swift
+//  PomodoroTimerWatchExtension Watch App
 //
-//  Created by Sam.Siamon on 12/6/23.
+//  Created by Sam.Siamon on 12/19/23.
 //
 
 import Foundation
-import ActivityKit
 
-final class ContentViewModel: ObservableObject {
+final class PomodoroWatchViewModel: ObservableObject {
     @Published var isActive = false
     @Published var focusIsActive = false
     @Published var breakIsActive = false
@@ -25,7 +24,6 @@ final class ContentViewModel: ObservableObject {
         }
     }
     @Published var cyclesCount = 1
-    @Published var activity: Activity<PomodoroAttributes>?
     private var initialTime = 0
     private var initialFocusTime = 0
     private var initialFocusMinutes: Float = 0
@@ -52,21 +50,6 @@ final class ContentViewModel: ObservableObject {
         self.isActive = true
         self.endDate = Calendar.current.date(byAdding: .minute, value: Int((focusMinutes + breakMinutes) * Float(cyclesCount)), to: endDate)!
         startFocus()
-        // start live activity
-        let attributes = PomodoroAttributes()
-        let state = ActivityContent(
-            state: PomodoroAttributes.ContentState(
-                focusIsActive: focusIsActive,
-                breakIsActive: breakIsActive,
-                focusTime: focusTime,
-                focusMinutes: focusMinutes,
-                breakTime: breakTime,
-                breakMinutes: breakMinutes,
-                cyclesCount: cyclesCount
-            ),
-            staleDate: nil
-        )
-        activity = try? Activity<PomodoroAttributes>.request(attributes: attributes, content: state)
     }
 
     func startFocus() {
@@ -89,22 +72,6 @@ final class ContentViewModel: ObservableObject {
 
     // Reset the timer
     func reset() {
-        // end live activity
-        let state = ActivityContent(
-            state: PomodoroAttributes.ContentState(
-                focusIsActive: focusIsActive,
-                breakIsActive: breakIsActive,
-                focusTime: focusTime,
-                focusMinutes: focusMinutes,
-                breakTime: breakTime,
-                breakMinutes: breakMinutes,
-                cyclesCount: cyclesCount
-            ),
-            staleDate: nil
-        )
-        Task {
-            await activity?.end(state, dismissalPolicy: .immediate)
-        }
         self.focusMinutes = initialFocusMinutes
         self.focusTime = "\(Int(focusMinutes)):00"
         self.breakMinutes = initialBreakMinutes
@@ -116,24 +83,6 @@ final class ContentViewModel: ObservableObject {
     // Show updates of the timer
     func updateCountdown() {
         guard isActive else { return }
-        defer {
-            //     update live activity
-            Task {
-                let state = ActivityContent(
-                    state: PomodoroAttributes.ContentState(
-                        focusIsActive: focusIsActive,
-                        breakIsActive: breakIsActive,
-                        focusTime: focusTime,
-                        focusMinutes: focusMinutes,
-                        breakTime: breakTime,
-                        breakMinutes: breakMinutes,
-                        cyclesCount: cyclesCount
-                    ),
-                    staleDate: nil
-                )
-                await activity?.update(state)
-            }
-        }
         if cyclesCount > 0 {
             if focusIsActive {
                 // Gets the current date and makes the time difference calculation

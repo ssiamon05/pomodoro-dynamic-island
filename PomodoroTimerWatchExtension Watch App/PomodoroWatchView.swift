@@ -1,0 +1,91 @@
+//
+//  PomodoroWatchView.swift
+//  PomodoroTimerWatchExtension Watch App
+//
+//  Created by Sam.Siamon on 12/19/23.
+//
+
+import SwiftUI
+
+struct PomodoroWatchView: View {
+    @StateObject private var viewModel = PomodoroWatchViewModel()
+    private let timer = Timer.publish(every: 1, on: .current, in: .common).autoconnect()
+    var body: some View {
+        ScrollView {
+            VStack {
+                if !viewModel.isActive {
+                    VStack {
+                        Text("Focus for: \(viewModel.focusTime)")
+                        Slider(value: $viewModel.focusMinutes, in: 1...20, step: 1)
+                    }
+                    .padding(.bottom, 5)
+                    VStack {
+                        Text("Break for: \(viewModel.breakTime)")
+                        Slider(value: $viewModel.breakMinutes, in: 1...20, step: 1)
+                    }
+                    .padding(.bottom, 5)
+                    VStack {
+                        Text("Number of Cycles:")
+                            .padding(.bottom, 5)
+                        HStack {
+                            Image(systemName: "minus.circle")
+                                .resizable()
+                                .frame(width: 25, height: 25)
+                                .foregroundStyle(viewModel.cyclesCount == 1 ? .gray : .blue)
+                                .onTapGesture {
+                                    viewModel.cyclesCount -= 1
+                                }
+                                .disabled(viewModel.cyclesCount == 1)
+                            Text("\(viewModel.cyclesCount)")
+                                .padding(.horizontal, 10)
+                                .font(.title3)
+                            Image(systemName: "plus.circle")
+                                .resizable()
+                                .frame(width: 25, height: 25)
+                                .foregroundStyle(viewModel.cyclesCount == 5 ? .gray : .blue)
+                                .onTapGesture {
+                                    viewModel.cyclesCount += 1
+                                }
+                                .disabled(viewModel.cyclesCount == 5)
+                        }
+                    }
+                    .padding(.bottom, 5)
+                    Button("START") {
+                        viewModel.start()
+                    }
+                    .foregroundStyle(.white)
+                    .background {
+                        RoundedRectangle(cornerRadius: 10)
+                            .foregroundStyle(.green)
+                    }
+                } else {
+                    let count = viewModel.cyclesCount - 1
+                    Text("Cycles Remaining: \(count <= 0 ? 0 : count)")
+                    if viewModel.focusIsActive {
+                        Text("FOCUS")
+                            .font(.title2)
+                            .foregroundStyle(.purple)
+                        Text("\(viewModel.focusTime)")
+                    } else {
+                        Text("BREAK")
+                            .font(.title2)
+                            .foregroundStyle(.cyan)
+                        Text("\(viewModel.breakTime)")
+                    }
+                    Button("RESET") {
+                        viewModel.reset()
+                    }
+                }
+            }
+            .padding(10)
+            Spacer()
+        }
+        .onReceive(timer) { _ in
+            viewModel.updateCountdown()
+        }
+    }
+}
+
+#Preview {
+    PomodoroWatchView()
+}
